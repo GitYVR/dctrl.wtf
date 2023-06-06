@@ -1,5 +1,5 @@
 import { Grid, Link, Typography } from "@mui/material";
-
+import Calender from "./Calendar";
 function App() {
   return (
     <Grid
@@ -17,6 +17,8 @@ function App() {
         </Typography>
         <br />
         <Link href="https://discord.gg/7rjEfhtsxe">discord</Link>
+        <br />
+        <Calender />
       </Grid>
     </Grid>
   );
