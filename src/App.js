@@ -16,7 +16,8 @@ function App() {
           435 w pender st, vancouver, bc
         </Typography>
         <br />
-        <Link href="https://discord.gg/7rjEfhtsxe">discord</Link>
+        <Link href="https://discord.gg/smU8bVrDGT">discord</Link>
+<iframe src="https://calendar.google.com/calendar/embed?src=dctrlyvr%40gmail.com&ctz=America%2FVancouver" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
       </Grid>
     </Grid>
   );
