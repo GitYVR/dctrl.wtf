@@ -13,8 +13,8 @@ function App() {
     >
       <Grid item xs={3} style={{ minWidth:"100%" }} alignItems={"center"} justifyContent={"center"}>
         <div style={{ marginTop: "15vh", marginBottom: "15vh" }}>
-          <img style={{ width: "420px" }} src={"/DCTRL_logo.png"} alt="Dctrl Logo"/>
-          <Typography variant="h4">Dctrl</Typography>
+          <img style={{ width: "420px", maxWidth: "50%" }} src={"/DCTRL_logo.png"} alt="Dctrl Logo"/>
+          <Typography variant="h4">DCTRL</Typography>
           <Typography variant="subtitle1">
             435 W Pender Street, Vancouver, BC
           </Typography>
