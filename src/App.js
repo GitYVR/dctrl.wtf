@@ -13,16 +13,16 @@ function App() {
       <Grid item xs={3}>
         <Typography variant="h4">dctrl</Typography>
         <Typography variant="subtitle1">
-          435 w pender st, vancouver, bc
+          435 W Pender Street, Vancouver, BC
         </Typography>
         <br />
-        <Link href="https://discord.gg/7rjEfhtsxe">Discord</Link>
+        <Link href="https://discord.gg/7rjEfhtsxe"/>Discord</Link>
         <br />
-        <Link href="https://yvrsidewalk.com">Sidewalk</Link>
+        <Link href="https://yvrsidewalk.com%22%3Esidewalk"/>Sidewalk</Link>
         <br />
-        <Link href="https://yvrbepsi.com">Bepsi Drink Machine</Link>
+        <Link href="https://yvrbepsi.com%22%3Ebepsi/"/>Drink Machine</Link>
         <br />
-        <Link href="https://door3.dctrl.wtf">Door Access</Link>
+        <Link href="https://door3.dctrl.wtf%22%3Edoor/"/>Door Access</Link>
         <br />
         <br />
         <Calender />
