@@ -3,7 +3,6 @@ import Calender from "./Calendar";
 
 function App() {
   return (
-    <>
     <Grid
       container
       spacing={0}
@@ -34,7 +33,6 @@ function App() {
       </Grid>
       
     </Grid>
-    </>
   );
 }
 
