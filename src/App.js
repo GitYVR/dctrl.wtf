@@ -16,13 +16,13 @@ function App() {
           435 W Pender Street, Vancouver, BC
         </Typography>
         <br />
-        <Link href="https://discord.gg/7rjEfhtsxe"/>Discord</Link>
+        <Link href="https://discord.gg/7rjEfhtsxe">Discord</Link>
         <br />
-        <Link href="https://yvrsidewalk.com%22%3Esidewalk"/>Sidewalk</Link>
+        <Link href="https://yvrsidewalk.com%22%3Esidewalk">Sidewalk</Link>
         <br />
-        <Link href="https://yvrbepsi.com%22%3Ebepsi/"/>Drink Machine</Link>
+        <Link href="https://yvrbepsi.com%22%3Ebepsi/">Drink Machine</Link>
         <br />
-        <Link href="https://door3.dctrl.wtf%22%3Edoor/"/>Door Access</Link>
+        <Link href="https://door3.dctrl.wtf%22%3Edoor/">Door Access</Link>
         <br />
         <br />
         <Calender />
