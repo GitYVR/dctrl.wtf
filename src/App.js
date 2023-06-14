@@ -16,7 +16,7 @@ function App() {
           <img style={{ width: "420px", maxWidth: "50%" }} src={"/DCTRL_logo.png"} alt="Dctrl Logo"/>
           <Typography variant="h4">DCTRL</Typography>
           <Typography variant="subtitle1">
-            435 W Pender Street, Vancouver, BC
+            436 W Pender Street, Vancouver, BC
           <br />
           <br />
           <Link href="https://discord.gg/7rjEfhtsxe">Discord</Link>
