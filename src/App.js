@@ -19,6 +19,8 @@ function App() {
             436 W Pender Street, Vancouver, BC
           <br />
           <br />
+          <Link href="https://x.com/dctrlvan">@dctrlvan</Link>
+          <br />
           <Link href="https://discord.gg/7rjEfhtsxe">Discord</Link>
           <br />
           <Link href="https://yvrsidewalk.com">Sidewalk</Link>
