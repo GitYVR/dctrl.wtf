@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import ConnectWallet from './ConnectWalletComponent';
+import ConnectWallet from './ConnectWalletComponent.js';
 import ManageFob from './ManageFobComponent';
 import ListCurrentFobs from './ListFobComponent';
 import ManageMembership from './ManageMembershipComponent';

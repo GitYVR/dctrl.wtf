@@ -7,7 +7,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
 import App from "./App";
-import FobManagement from "./FobManagement"; // import your new page component
+import FobManagement from "./FobManagement/FobManagement"; // import your new page component
 
 const darkTheme = createTheme({
   palette: {
