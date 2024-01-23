@@ -4,8 +4,8 @@ import FobABI from "./FobNFTABI.json";
 import { useState } from 'react';
 import MinterABI from './MinterABI.json';
 
-const FobContractAddress = "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
-const MinterAddress = "0x0165878A594ca255338adfa4d48449f69242Eb8F"
+const FobContractAddress = "0x880505222ccAd5E03221005839F12d32B7F4B2EF"
+const MinterAddress = "0xB2895d2a0205F05c70C0342259492C97423FaCC4"
 
 function ManageFob() {
     const [receiver, setReceiver] = useState(null);
@@ -28,15 +28,15 @@ function ManageFob() {
         return ethers.BigNumber.from(numberHash);
     }
 
-    async function getPaymentForMonths(months) {
-        return (await minterContract.fobMonthly()).mul(months).toString();
+    async function getPaymentForDays(days) {
+        return (await minterContract.fobDaily()).mul(days).toString();
     }
     async function issue() {
         if (fobNumber == null || months == null || receiver == null) {
             setMsg("Please enter missing fields");
             return;
         } else {
-            const payment = await getPaymentForMonths(months);
+            const payment = await getPaymentForDays(months);
             const tx = await minterContract.issueFob(receiver, convertNumberToHashedUint256(fobNumber), months, { value: payment });
             await tx.wait();
             setMsg(`Paid ${ethers.utils.formatEther(payment)} ether to issue Fob ${fobNumber} with Id ${convertNumberToHashedUint256(fobNumber).toString()} for ${months} months at transaction: ${tx.hash}`);
@@ -49,22 +49,22 @@ function ManageFob() {
             setMsg("Please enter missing fields");
             return;
         } else {
-            const payment = await getPaymentForMonths(months);
+            const payment = await getPaymentForDays(months);
             const tx = await minterContract.extendFob(convertNumberToHashedUint256(fobNumber), months, { value: payment });
             await tx.wait();
             setMsg(`Paid ${ethers.utils.formatEther(payment)} ether to extend Fob ${fobNumber} with Id ${convertNumberToHashedUint256(fobNumber).toString()} for ${months} months at transaction: ${tx.hash}`);
         }
     }
 
-    async function reissue() {
+    async function burnAndMint() {
         if (fobNumber == null || months == null) {
             setMsg("Please enter missing fields");
             return;
         } else {
-            const payment = await getPaymentForMonths(months);
-            const tx = await minterContract.reissue(receiver, convertNumberToHashedUint256(fobNumber), months, { value: payment });
+            const payment = await getPaymentForDays(months);
+            const tx = await minterContract.burnAndMintFob(receiver, convertNumberToHashedUint256(fobNumber), months, { value: payment });
             await tx.wait();
-            setMsg(`Paid ${ethers.utils.formatEther(payment)} ether to reissue Fob ${fobNumber} with Id ${convertNumberToHashedUint256(fobNumber).toString()} for ${months} months at transaction: ${tx.hash}`);
+            setMsg(`Paid ${ethers.utils.formatEther(payment)} ether to  Fob ${fobNumber} with Id ${convertNumberToHashedUint256(fobNumber).toString()} for ${months} months at transaction: ${tx.hash}`);
         }
     }
 
@@ -95,8 +95,8 @@ function ManageFob() {
             <Button variant="contained" onClick={extend}>
                 Extend Fob
             </Button>
-            <Button variant="contained" onClick={reissue}>
-                Reissue Fob
+            <Button variant="contained" onClick={burnAndMint}>
+                Burn And Mint Fob
             </Button>
             <Button variant="contained" onClick={burn}>
                 Burn Fob

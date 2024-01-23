@@ -4,8 +4,8 @@ import { Button } from '@mui/material';
 import MinterABI from './MinterABI.json';
 import MembershipABI from './MembershipNftABI.json';
 
-const MinterAddress = "0x0165878A594ca255338adfa4d48449f69242Eb8F"
-const MembershipNftAddress = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+const MinterAddress = "0xB2895d2a0205F05c70C0342259492C97423FaCC4"
+const MembershipNftAddress = "0x807ec011bd4c5b122178d73fbd0b49d46fb4a0b9"
 
 function ManageMembershipComponent() {
     const [membershipName, setMembershipName] = useState(null);
