@@ -1,8 +1,8 @@
 import { ethers } from 'ethers';
 import { useState } from 'react';
 import { Button } from '@mui/material';
-import MinterABI from './MinterABI.json';
-import MembershipABI from './MembershipNftABI.json';
+import MinterABI from '../ABI/MinterABI.json';
+import MembershipABI from '../ABI/MembershipNftABI.json';
 
 const MinterAddress = "0xB2895d2a0205F05c70C0342259492C97423FaCC4"
 const MembershipNftAddress = "0x807ec011bd4c5b122178d73fbd0b49d46fb4a0b9"

@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import ConnectWallet from './ConnectWalletComponent.js';
-import ManageFob from './ManageFobComponent';
-import ListCurrentFobs from './ListFobComponent';
-import ManageMembership from './ManageMembershipComponent';
-import ListCurrentMembership from './ListCurrentMembership.js';
+import ConnectWallet from './Components/ConnectWalletComponent.js';
+import ManageFob from './Components/ManageFobComponent.js';
+import ListCurrentFobs from './Components/ListFobComponent.js';
+import ManageMembership from './Components/ManageMembershipComponent.js';
+import ListCurrentMembership from './Components/ListCurrentMembership.js';
 
-function FobManagement() {
+function Management() {
     const [isConnected, setIsConnected] = useState(false);
     const [walletAddress, setWalletAddress] = useState(null);
     return (
@@ -28,7 +28,7 @@ function FobManagement() {
     );
 }
 
-export default FobManagement;
+export default Management;
 
 
 
