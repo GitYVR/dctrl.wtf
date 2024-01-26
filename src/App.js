@@ -30,11 +30,6 @@ function App() {
           <br />
           <Link href="https://door3.dctrl.wtf">Door Access</Link>
           <br />
-          <RouterLink to="/fob-management">
-            <button type="button">
-              Fob Management
-            </button>
-          </RouterLink>
           </Typography>
         </div>
         <Calender />
