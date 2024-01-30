@@ -5,7 +5,7 @@ import ListCurrentFobs from './Components/ListFobComponent.js';
 import ManageMembership from './Components/ManageMembershipComponent.js';
 import ListCurrentMembership from './Components/ListCurrentMembership.js';
 
-function Management() {
+function Admin() {
     const [password, setPassword] = useState(null);
     const [isConnected, setIsConnected] = useState(false);
     const [walletAddress, setWalletAddress] = useState(null);
@@ -30,13 +30,12 @@ function Management() {
                 </div>
                 :
                 <input type="password" onChange={(e) => setPassword(e.target.value)} />
-
             }
         </div>
     );
 }
 
-export default Management;
+export default Admin;
 
 
 

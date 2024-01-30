@@ -69,29 +69,6 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "fobNumber",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "numDays",
-        "type": "uint256"
-      }
-    ],
-    "name": "burnAndMintFob",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "uint256",
         "name": "fobNumber",
         "type": "uint256"
@@ -110,6 +87,25 @@
   {
     "inputs": [],
     "name": "fobDaily",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "fobMap",
     "outputs": [
       {
         "internalType": "uint256",
@@ -216,6 +212,25 @@
       }
     ],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "membershipMap",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -378,7 +393,7 @@
     ],
     "name": "transferExpirationToNewFobNumber",
     "outputs": [],
-    "stateMutability": "payable",
+    "stateMutability": "nonpayable",
     "type": "function"
   }
 ]
