@@ -26,12 +26,11 @@ function Membership() {
             // extract all NFTs in MembershipNFT from response
             let nftData = [];
             for (let obj in resp.data.items) {
-                if (resp.data.items[obj].contract_address === process.env.REACT_APP_MEMBERSHIP_ADDRESS) {
+                if ((resp.data.items[obj].contract_address).toLowerCase() === process.env.REACT_APP_MEMBERSHIP_ADDRESS.toLowerCase()) {
                     nftData = resp.data.items[obj].nft_data;
                     break;
                 }
             }
-
             // Go through each token and format the data to be printed
             let membership = [];
             for (let token in nftData) {

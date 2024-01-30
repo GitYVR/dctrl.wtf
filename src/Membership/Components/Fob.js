@@ -36,8 +36,13 @@ function Fob({address}) {
             console.log(resp);
             let newFobs = [];
             for (let obj in resp.data.items) {
-                if (resp.data.items[obj].contract_address === process.env.REACT_APP_FOB_ADDRESS) {
-                    newFobs = resp.data.items[obj].nft_data;
+                if ((resp.data.items[obj].contract_address).toLowerCase() === process.env.REACT_APP_FOB_ADDRESS.toLowerCase()) {
+                    let expiration = await fobContract.idToExpiration(resp.data.items[obj].nft_data[0].token_id.toString())
+                    let data = {
+                        "token_id": resp.data.items[obj].nft_data[0].token_id.toString(),
+                        "expiration": expiration.toString()
+                    }
+                    newFobs.push(data);
                     break;
                 }
             }
@@ -102,7 +107,7 @@ function Fob({address}) {
                 <>
                     <ul>
                         <li>
-                            Fob Number: {(fobs[0].token_id).div(process.env.REACT_APP_LARGEPRIME).toString()}
+                            Fob Number: {ethers.BigNumber.from(fobs[0].token_id).div(process.env.REACT_APP_LARGEPRIME).toString()}
                         </li>
                         <li>
                             Expiration Date: {new Date(fobs[0].expiration * 1000).toLocaleString()}
