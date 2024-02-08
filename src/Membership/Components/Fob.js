@@ -98,19 +98,27 @@ function Fob({address}) {
             setMsg("Enter a fob number");
             return;
         } else {
+            setMsg(null);
             setLoading(true);
             setShowIssuingFobText(true);
-            let days = 30;
-            const payment = await getPaymentForDays(days);
-            const tx = await minterContract.issueFob(address, encryptNumber(fobNumber), days, { value: payment });
-            await tx.wait();
-            let data = {
-                "token_id": encryptNumber(fobNumber),
-                "expiration": (await fobContract.idToExpiration(encryptNumber(fobNumber))).toString()
+            try {
+                let days = 30;
+                const payment = await getPaymentForDays(days);
+                const tx = await minterContract.issueFob(address, encryptNumber(fobNumber), days, { value: payment });
+                await tx.wait();
+                let data = {
+                    "token_id": encryptNumber(fobNumber),
+                    "expiration": (await fobContract.idToExpiration(encryptNumber(fobNumber))).toString()
+                }
+
+                setFobs([data]);
+            } catch (e) {
+                console.log(e)
+                setMsg("Couldn't issue fob. Please share console log with devs.")
             }
+
             setLoading(false);
             setShowIssuingFobText(false);
-            setFobs([data]);
         }
     }
 
