@@ -17,7 +17,9 @@ function Membership() {
     const minterContract = new ethers.Contract(process.env.REACT_APP_MINTER_ADDRESS, MinterABI, wallet);
     const membershipContract = new ethers.Contract(process.env.REACT_APP_MEMBERSHIP_ADDRESS, MembershipABI, wallet);
 
-    async function getMembership() {
+    async function tryGetMembershipFromCovalent() {
+        let foundMembership = false;
+
         try {
             const client = new CovalentClient(process.env.REACT_APP_COVALENT_CLIENTID);
             const resp = await client.NftService.getNftsForAddress("eth-sepolia",walletAddress, {"withUncached": true});
@@ -46,38 +48,60 @@ function Membership() {
                 }
                 membership.push(data);
             }
-            setMemberships(membership);
-            setIsConnected(true);
+            if (membership.length > 0)
+            {
+                setMemberships(membership);
+                foundMembership = true;
+            }
         }
         catch(e) {
             console.log(e);
             console.log("Failed to retrieve from Covalent...")
-            try {
-                let tokenId = await minterContract.membershipMap(walletAddress);
-                if (tokenId.toString() !== "0")
-                {
-                    let [creationDate, name] = await membershipContract.idToMetadata(tokenId.toString())
-                    let date = new Date(creationDate * 1000);
-                    let dateString = date.toLocaleString();
-                    let addr6551 = await minterContract.getMembershipAddressById(tokenId.toString());
-                    let data = {
-                        "token_id": tokenId.toString(),
-                        "creation_date": dateString,
-                        "name": name,
-                        "addr6551": addr6551
-                    }
-                    setMemberships([data]);
-                }
-            }
-            catch(e) {
-                console.log(e)
-                console.log("Failed to retrieve from contract...")
-            }
-        } 
-        finally {
-            setIsConnected(true);        
         }
 
+        return foundMembership;
+    }
+
+    async function tryGetMembershipFromContract() {
+        let foundMembership = false;
+
+        try {
+            let tokenId = await minterContract.membershipMap(walletAddress);
+            if (tokenId.toString() !== "0")
+            {
+                let [creationDate, name] = await membershipContract.idToMetadata(tokenId.toString())
+                let date = new Date(creationDate * 1000);
+                let dateString = date.toLocaleString();
+                let addr6551 = await minterContract.getMembershipAddressById(tokenId.toString());
+                let data = {
+                    "token_id": tokenId.toString(),
+                    "creation_date": dateString,
+                    "name": name,
+                    "addr6551": addr6551
+                }
+                setMemberships([data]);
+                foundMembership = true;
+            }
+        }
+        catch(e) {
+            console.log(e)
+            console.log("Failed to retrieve from contract...")
+        }
+
+        return foundMembership;
+    }
+    
+    async function getMembership() {
+        if(await tryGetMembershipFromCovalent())
+        {
+            console.log("Successfully retrieved from Covalent")
+        }
+        else if (await tryGetMembershipFromContract())
+        {
+            console.log("Successfully retrieved from Contract")
+        }
+
+        setIsConnected(true);
     }
 
     async function onIssue(tokenId) {
