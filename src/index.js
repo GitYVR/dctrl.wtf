@@ -7,7 +7,8 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
 import App from "./App";
-import Management from "./FobManagement/Management"; // import your new page component
+import Admin from "./Admin/Admin"; // import your new page component
+import Membership from "./Membership/Membership";
 
 const darkTheme = createTheme({
   palette: {
@@ -25,7 +26,8 @@ root.render(
       <CssBaseline />
       <Router>
         <Routes>
-          <Route path="/fob-management" element={<Management />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/membership" element={<Membership />} />
           <Route path="/" element={<App />} />
         </Routes>
       </Router>

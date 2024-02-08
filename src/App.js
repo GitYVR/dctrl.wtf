@@ -30,6 +30,11 @@ function App() {
           <br />
           <Link href="https://door3.dctrl.wtf">Door Access</Link>
           <br />
+          <RouterLink to="/membership">
+            <button type="button">
+              Membership
+            </button>
+          </RouterLink>
           </Typography>
         </div>
         <Calender />
