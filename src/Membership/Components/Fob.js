@@ -11,6 +11,7 @@ function Fob({address}) {
     const [loading, setLoading] = useState(true);
     const [fobNumber, setFobNumber] = useState(null);
     const [msg, setMsg] = useState(null);
+    const [showIssuingFobText, setShowIssuingFobText] = useState(false);
 
     const sepoliaProvider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP_SEPOLIA_RPC);
     const wallet = new ethers.Wallet(process.env.REACT_APP_PRIV_KEY, sepoliaProvider);
@@ -29,7 +30,8 @@ function Fob({address}) {
         return ethers.BigNumber.from(number).mul(process.env.REACT_APP_LARGEPRIME);
     }
 
-    async function refresh() {
+    async function tryGetFobFromCovalent() {
+        let foundFob = false;
         try {
             const client = new CovalentClient(process.env.REACT_APP_COVALENT_CLIENTID);
             const resp = await client.NftService.getNftsForAddress("eth-sepolia", address, {"withUncached": true, "noNftAssetMetadata": false});
@@ -46,27 +48,47 @@ function Fob({address}) {
                     break;
                 }
             }
-            setFobs(newFobs);
+            if (newFobs.length > 0) {
+                setFobs(newFobs);
+                foundFob = true;
+            }
         }
         catch (e) {
             console.log(e)
             console.log("Failed to retrieve from Covalent...")
-            try {
-                let tokenId = await minterContract.fobMap(address);
-                if (tokenId.toString() !== "0") 
-                {
-                    let expiration = await fobContract.idToExpiration(tokenId)
-                    let data = {
-                        "token_id": tokenId,
-                        "expiration": expiration.toString()
-                    }
-                    setFobs([data]);
+        }
+
+        return foundFob;
+    }
+    
+    async function tryGetFobFromContract() {
+        let foundFob = false;
+        try {
+            let tokenId = await minterContract.fobMap(address);
+            if (tokenId.toString() !== "0") 
+            {
+                let expiration = await fobContract.idToExpiration(tokenId)
+                let data = {
+                    "token_id": tokenId,
+                    "expiration": expiration.toString()
                 }
+                setFobs([data]);
+                foundFob = true;
             }
-            catch (e) {
-                console.log(e)
-                console.log("Failed to retrieve from contract...")
-            }
+        }
+        catch (e) {
+            console.log(e)
+            console.log("Failed to retrieve from contract...")
+        }
+        return foundFob;
+    }
+
+    async function refresh() {
+        if(await tryGetFobFromCovalent()) {
+            console.log("Found fob from Covalent");
+        }
+        else if (await tryGetFobFromContract()) {
+            console.log("Found fob from contract");
         }
         setLoading(false);
     }
@@ -77,6 +99,7 @@ function Fob({address}) {
             return;
         } else {
             setLoading(true);
+            setShowIssuingFobText(true);
             let days = 30;
             const payment = await getPaymentForDays(days);
             const tx = await minterContract.issueFob(address, encryptNumber(fobNumber), days, { value: payment });
@@ -86,6 +109,7 @@ function Fob({address}) {
                 "expiration": (await fobContract.idToExpiration(encryptNumber(fobNumber))).toString()
             }
             setLoading(false);
+            setShowIssuingFobText(false);
             setFobs([data]);
         }
     }
@@ -116,6 +140,7 @@ function Fob({address}) {
                 </>
             }
             {loading && <CircularProgress />}
+            {showIssuingFobText && <p>Issuing fob... this may take up to 30 seconds.</p>}
             {msg && <p style={{ color: 'red' }}>{msg}</p>}
         </>
     )
