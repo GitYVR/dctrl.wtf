@@ -8,12 +8,16 @@ import { ethers } from 'ethers';
 const MinterAddress = "0xB2895d2a0205F05c70C0342259492C97423FaCC4"
 const MembershipNftAddress = "0x807ec011bd4c5b122178d73fbd0b49d46fb4a0b9"
 
-const provider = new ethers.providers.Web3Provider(window.ethereum);
-const signer = provider.getSigner();
-const minterContract = new ethers.Contract(MinterAddress, MinterABI, signer);
-const membershipContract = new ethers.Contract(MembershipNftAddress, MembershipABI, signer);
-
 function ListCurrentMembership({walletAddress}) {
+    let provider, signer, minterContract, membershipContract;
+
+    if (window.ethereum != null) {
+        provider = new ethers.providers.Web3Provider(window.ethereum);
+        signer = provider.getSigner();
+        minterContract = new ethers.Contract(MinterAddress, MinterABI, signer);
+        membershipContract = new ethers.Contract(MembershipNftAddress, MembershipABI, signer);
+    }
+
     const [memberships, setMemberships] = useState([]);
 
     // helper JSX for each item
