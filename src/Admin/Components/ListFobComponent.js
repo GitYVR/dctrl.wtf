@@ -22,7 +22,7 @@ function ListCurrentFobs({walletAddress}) {
     }
 
     async function refresh() {
-        const client = new CovalentClient("cqt_rQKqPkgW7VWgbrbCqcPpXCyHF3D7");
+        const client = new CovalentClient(process.env.REACT_APP_COVALENT_CLIENTID);
         const resp = await client.NftService.getNftsForAddress("eth-sepolia", addr, {"withUncached": true, "noNftAssetMetadata": false});
         console.log(resp);
         let newFobs = [];
