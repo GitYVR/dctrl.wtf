@@ -4,11 +4,6 @@ import FobABI from "../ABI/FobNFTABI.json";
 import { useState } from 'react';
 import MinterABI from '../ABI/MinterABI.json';
 
-const FobContractAddress = "0x880505222ccAd5E03221005839F12d32B7F4B2EF"
-const MinterAddress = "0xB2895d2a0205F05c70C0342259492C97423FaCC4"
-
-const LARGEPRIME = "69420420420420";
-
 function ManageFob() {
     const [receiver, setReceiver] = useState(null);
     const [fobNumber, setFobNumber] = useState(null);
@@ -18,15 +13,15 @@ function ManageFob() {
 
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
-    const fobContract = new ethers.Contract(FobContractAddress, FobABI, signer);
-    const minterContract = new ethers.Contract(MinterAddress, MinterABI, signer);
+    const fobContract = new ethers.Contract(process.env.REACT_APP_FOB_ADDRESS, FobABI, signer);
+    const minterContract = new ethers.Contract(process.env.REACT_APP_MINTER_ADDRESS, MinterABI, signer);
 
     function encryptNumber(number) {
-        return ethers.BigNumber.from(number).mul(LARGEPRIME);
+        return ethers.BigNumber.from(number).mul(process.env.REACT_APP_LARGEPRIME);
     }
 
     function decryptNumber(encrypted) {
-        return ethers.BigNumber.from(encrypted).div(LARGEPRIME);
+        return ethers.BigNumber.from(encrypted).div(process.env.REACT_APP_LARGEPRIME);
     }
 
     async function getPaymentForDays(days) {
@@ -80,6 +75,18 @@ function ManageFob() {
         }
     }
 
+    async function queryExpiration() {
+        if (fobNumber == null) {
+            setMsg("Please enter a fob number");
+            return;
+        } else {
+            const expiration = await fobContract.idToExpiration(encryptNumber(fobNumber));
+            let date = new Date(expiration * 1000);
+            let dateString = date.toLocaleString();
+            setMsg(`Fob ${fobNumber} with Id ${encryptNumber(fobNumber).toString()} has expiration: ${dateString}`);
+        }
+    }
+
     function convertToEncrypted() {
         if (fobNumber == null) {
             setMsg("Please enter a fob number");
@@ -117,6 +124,9 @@ function ManageFob() {
             </Button>
             <Button variant="contained" onClick={convertToDecrypted}>
                 Decrypt Fob Number
+            </Button>
+            <Button variant="contained" onClick={queryExpiration}>
+                Query Fob Number
             </Button>
             <br />
             Receiver

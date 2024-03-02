@@ -11,7 +11,7 @@ function Fob({address}) {
     const [loading, setLoading] = useState(true);
     const [fobNumber, setFobNumber] = useState(null);
     const [msg, setMsg] = useState(null);
-    const [showIssuingFobText, setShowIssuingFobText] = useState(false);
+    const [showWorkingText, setShowWorkingText] = useState(false);
 
     const sepoliaProvider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP_SEPOLIA_RPC);
     const wallet = new ethers.Wallet(process.env.REACT_APP_PRIV_KEY, sepoliaProvider);
@@ -100,7 +100,7 @@ function Fob({address}) {
         } else {
             setMsg(null);
             setLoading(true);
-            setShowIssuingFobText(true);
+            setShowWorkingText(true);
             try {
                 let days = 30;
                 const payment = await getPaymentForDays(days);
@@ -118,8 +118,27 @@ function Fob({address}) {
             }
 
             setLoading(false);
-            setShowIssuingFobText(false);
+            setShowWorkingText(false);
         }
+    }
+
+    async function extend() {
+        setMsg(null);
+        setLoading(true);
+        setShowWorkingText(true);
+        try {
+            let days = 30;
+            const payment = await getPaymentForDays(days);
+            const tx = await minterContract.extendFob(fobs[0].token_id, days, { value: payment });
+            await tx.wait();
+            await refresh();
+        } catch (e) {
+            console.log(e)
+            setMsg("Couldn't extend fob. Please share console log with devs.")
+        }
+
+        setLoading(false);
+        setShowWorkingText(false);
     }
 
     return (
@@ -145,10 +164,14 @@ function Fob({address}) {
                             Expiration Date: {new Date(fobs[0].expiration * 1000).toLocaleString()}
                         </li>
                     </ul>
+
+                    <Button variant="contained" onClick={extend}>
+                        Extend Fob for 30 days
+                    </Button>
                 </>
             }
             {loading && <CircularProgress />}
-            {showIssuingFobText && <p>Issuing fob... this may take up to 30 seconds.</p>}
+            {showWorkingText && <p>Working... this may take up to 30 seconds.</p>}
             {msg && <p style={{ color: 'red' }}>{msg}</p>}
         </>
     )

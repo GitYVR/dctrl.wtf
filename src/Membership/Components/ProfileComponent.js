@@ -5,7 +5,11 @@ import { useState } from 'react';
 
 function Profile({membership}) {
     const [msg, setMsg] = useState(null);
+    const [showBitcoinQR, setShowBitcoinQR] = useState(false);
 
+    function showHideBitcoinQR() {
+        setShowBitcoinQR(!showBitcoinQR);
+    }
     async function donate() {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
@@ -41,6 +45,13 @@ function Profile({membership}) {
             <Button variant="contained" onClick={donate}>
                 Donate 0.01 ETH today!
             </Button>
+            <br/>
+            <br/>
+            <Button variant="contained" onClick={showHideBitcoinQR}>
+                Donate bitcoin on Lightning!
+            </Button>
+            <br/>
+            {showBitcoinQR && <img src="/bitcoinQR.png" alt="Bitcoin QR code" />}
             {msg && <p>{msg}</p>}
         </>
     )
