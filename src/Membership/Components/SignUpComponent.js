@@ -20,6 +20,7 @@ function SignUp({ address, onIssue }) {
     const [checked, setChecked] = useState(false);
     const [linkClicked, setLinkClicked] = useState(false);
     const [shake, setShake] = useState(false);
+    const [linkColor, setLinkColor] = useState('blue');
 
     function onCommunityRulesLinkClick() {
         setLinkClicked(true);
@@ -32,6 +33,10 @@ function SignUp({ address, onIssue }) {
     // the checkbox before opening the link.
     function shakeOnDisabled() {
         if (!linkClicked) {
+            const r = Math.floor(Math.random() * 256);
+            const g = Math.floor(Math.random() * 256);
+            const b = Math.floor(Math.random() * 256);
+            setLinkColor(`rgb(${r},${g},${b}`);
             setShake(true);
         }
     }
@@ -88,7 +93,7 @@ function SignUp({ address, onIssue }) {
                 </div>
                 <p>I have read and agree to the:</p>
                 <p className={shake ? 'shake' : ''} onAnimationEnd={() => setShake(false)} style={{marginLeft: '5px'}}>
-                    <a href={`https://0xtangle.notion.site/GENERAL-GUIDELINES-a4de149c5be1412f9e7723d2cc8381d3`} target="_blank" onClick={onCommunityRulesLinkClick}>
+                    <a href={`https://0xtangle.notion.site/GENERAL-GUIDELINES-a4de149c5be1412f9e7723d2cc8381d3`} target="_blank" onClick={onCommunityRulesLinkClick} style={{ color: linkColor }}>
                         DCTRL's Community Rules
                     </a>.
                 </p>
