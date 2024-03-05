@@ -2,14 +2,11 @@ import Fob from './Fob';
 import { ethers } from 'ethers';
 import { Button } from '@mui/material';
 import { useState } from 'react';
+import BitcoinDonationButton from './BitcoinDonationButton';
 
 function Profile({membership}) {
     const [msg, setMsg] = useState(null);
-    const [showBitcoinQR, setShowBitcoinQR] = useState(false);
 
-    function showHideBitcoinQR() {
-        setShowBitcoinQR(!showBitcoinQR);
-    }
     async function donate() {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
@@ -47,11 +44,7 @@ function Profile({membership}) {
             </Button>
             <br/>
             <br/>
-            <Button variant="contained" onClick={showHideBitcoinQR}>
-                Donate bitcoin on Lightning!
-            </Button>
-            <br/>
-            {showBitcoinQR && <img src="/bitcoinQR.png" alt="Bitcoin QR code" />}
+            <BitcoinDonationButton />
             {msg && <p>{msg}</p>}
         </>
     )
