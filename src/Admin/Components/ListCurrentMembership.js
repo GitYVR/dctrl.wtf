@@ -1,49 +1,33 @@
-import { CovalentClient } from "@covalenthq/client-sdk";
 import { useState } from 'react';
 import { Button } from '@mui/material';
-import MembershipABI from "../ABI/MembershipNftABI.json";
-import MinterABI from "../ABI/MinterABI.json";
-import { ethers } from 'ethers';
+import { covalent_getNftsForAddress, membership_idToMetadata, minter_getMembershipAddressById, minter_getMembershipIdForAddress } from '../../Membership/API/blockchain';
 
-const MinterAddress = "0xB2895d2a0205F05c70C0342259492C97423FaCC4"
-const MembershipNftAddress = "0x807ec011bd4c5b122178d73fbd0b49d46fb4a0b9"
-
-function ListCurrentMembership({walletAddress}) {
-    let provider, signer, minterContract, membershipContract;
-
-    if (window.ethereum != null) {
-        provider = new ethers.providers.Web3Provider(window.ethereum);
-        signer = provider.getSigner();
-        minterContract = new ethers.Contract(MinterAddress, MinterABI, signer);
-        membershipContract = new ethers.Contract(MembershipNftAddress, MembershipABI, signer);
-    }
-
+function ListCurrentMembership({ walletAddress }) {
+    const [address, setAddress] = useState(walletAddress);
     const [memberships, setMemberships] = useState([]);
 
     // helper JSX for each item
-    function MembershipListItem({membership, index}) {
+    function MembershipListItem({ membership, index }) {
         return (
             <li key={index}>
                 Token ID: {membership.token_id}
-                <br/>
+                <br />
                 Name: {membership.name}
-                <br/>
+                <br />
                 Creation Date: {membership.creation_date}
-                <br/>
+                <br />
                 6551 Address: {membership.addr6551}
             </li>
         );
     }
 
-    async function refresh() {
-        const client = new CovalentClient("cqt_rQKqPkgW7VWgbrbCqcPpXCyHF3D7");
-        const resp = await client.NftService.getNftsForAddress("eth-sepolia",walletAddress, {"withUncached": true});
-        console.log(resp);
+    async function queryCovalent() {
+        const resp = await covalent_getNftsForAddress(address);
 
         // extract all NFTs in MembershipNFT from response
         let nftData = [];
         for (let obj in resp.data.items) {
-            if (resp.data.items[obj].contract_address === MembershipNftAddress) {
+            if (resp.data.items[obj].contract_address === process.env.REACT_APP_MEMBERSHIP_ADDRESS) {
                 nftData = resp.data.items[obj].nft_data;
                 break;
             }
@@ -52,10 +36,10 @@ function ListCurrentMembership({walletAddress}) {
         // Go through each token and format the data to be printed
         let membership = [];
         for (let token in nftData) {
-            let [creationDate, name] = await membershipContract.idToMetadata(nftData[token].token_id.toString())
+            let [creationDate, name] = await membership_idToMetadata(nftData[token].token_id.toString())
             let date = new Date(creationDate * 1000);
             let dateString = date.toLocaleString();
-            let addr6551 = await minterContract.getMembershipAddressById(nftData[token].token_id.toString());
+            let addr6551 = await minter_getMembershipAddressById(nftData[token].token_id.toString());
             let data = {
                 "token_id": nftData[token].token_id.toString(),
                 "creation_date": dateString,
@@ -67,16 +51,42 @@ function ListCurrentMembership({walletAddress}) {
         setMemberships(membership);
     }
 
+    async function queryContract() {
+        try {
+            const tokenId = await minter_getMembershipIdForAddress(address);
+            const [creationDate, name] = await membership_idToMetadata(tokenId.toString())
+            let date = new Date(creationDate * 1000);
+            let dateString = date.toLocaleString();
+            let addr6551 = await minter_getMembershipAddressById(tokenId.toString());
+            let data = {
+                "token_id": tokenId.toString(),
+                "creation_date": dateString,
+                "name": name,
+                "addr6551": addr6551
+            }
+            setMemberships([data]);
+        } catch (e) {
+            console.log(e);
+            setMemberships([]);
+        }
+    }
+
     return (
         <div>
-            <Button variant="contained" onClick={refresh}>
-                Refresh List
+            Address to query
+            <input type="text" onChange={(e) => setAddress(e.target.value)} />
+            <br />
+            <Button variant="contained" onClick={queryCovalent}>
+                Query Covalent
             </Button>
-            <br/>
+            <Button variant="contained" onClick={queryContract}>
+                Query Contract
+            </Button>
+            <br />
             Currently owned memberships:
             <ul>
                 {memberships.map((membership, index) => (
-                    <MembershipListItem membership={membership} index={index}/>
+                    <MembershipListItem membership={membership} index={index} />
                 ))}
             </ul>
         </div>

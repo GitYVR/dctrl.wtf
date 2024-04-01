@@ -1,28 +1,20 @@
 import { useEffect, useState } from 'react';
 import ConnectWallet from './Components/ConnectWalletComponent.js';
-import { ethers } from 'ethers';
-import MinterABI from "../Admin/ABI/MinterABI.json";
-import MembershipABI from "../Admin/ABI/MembershipNftABI.json";
 import SignUp from './Components/SignUpComponent.js';
 import Profile from './Components/ProfileComponent.js';
-import { CovalentClient } from "@covalenthq/client-sdk";
+import { covalent_getNftsForAddress, membership_idToMetadata, minter_getMembershipAddressById, minter_getMembershipIdForAddress } from './API/blockchain';
 
 function Membership() {
     const [isConnected, setIsConnected] = useState(false);
     const [walletAddress, setWalletAddress] = useState(null);
     const [memberships, setMemberships] = useState([]);
 
-    const sepoliaProvider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP_SEPOLIA_RPC);
-    const wallet = new ethers.Wallet(process.env.REACT_APP_PRIV_KEY, sepoliaProvider);
-    const minterContract = new ethers.Contract(process.env.REACT_APP_MINTER_ADDRESS, MinterABI, wallet);
-    const membershipContract = new ethers.Contract(process.env.REACT_APP_MEMBERSHIP_ADDRESS, MembershipABI, wallet);
-
     async function tryGetMembershipFromCovalent() {
         let foundMembership = false;
 
+        console.log("tryGetMembershipFromCovalent");
         try {
-            const client = new CovalentClient(process.env.REACT_APP_COVALENT_CLIENTID);
-            const resp = await client.NftService.getNftsForAddress("eth-sepolia",walletAddress, {"withUncached": true});
+            const resp = await covalent_getNftsForAddress(walletAddress);
             console.log(resp);
 
             // extract all NFTs in MembershipNFT from response
@@ -36,10 +28,10 @@ function Membership() {
             // Go through each token and format the data to be printed
             let membership = [];
             for (let token in nftData) {
-                let [creationDate, name] = await membershipContract.idToMetadata(nftData[token].token_id.toString())
+                let [creationDate, name] = await membership_idToMetadata(nftData[token].token_id.toString())
                 let date = new Date(creationDate * 1000);
                 let dateString = date.toLocaleString();
-                let addr6551 = await minterContract.getMembershipAddressById(nftData[token].token_id.toString());
+                let addr6551 = await minter_getMembershipAddressById(nftData[token].token_id.toString());
                 let data = {
                     "token_id": nftData[token].token_id.toString(),
                     "creation_date": dateString,
@@ -48,13 +40,12 @@ function Membership() {
                 }
                 membership.push(data);
             }
-            if (membership.length > 0)
-            {
+            if (membership.length > 0) {
                 setMemberships(membership);
                 foundMembership = true;
             }
         }
-        catch(e) {
+        catch (e) {
             console.log(e);
             console.log("Failed to retrieve from Covalent...")
         }
@@ -64,15 +55,15 @@ function Membership() {
 
     async function tryGetMembershipFromContract() {
         let foundMembership = false;
+        console.log("tryGetMembershipFromContract");
 
         try {
-            let tokenId = await minterContract.membershipMap(walletAddress);
-            if (tokenId.toString() !== "0")
-            {
-                let [creationDate, name] = await membershipContract.idToMetadata(tokenId.toString())
+            let tokenId = await minter_getMembershipIdForAddress(walletAddress);
+            if (tokenId.toString() !== "0") {
+                let [creationDate, name] = await membership_idToMetadata(tokenId.toString())
                 let date = new Date(creationDate * 1000);
                 let dateString = date.toLocaleString();
-                let addr6551 = await minterContract.getMembershipAddressById(tokenId.toString());
+                let addr6551 = await minter_getMembershipAddressById(tokenId.toString());
                 let data = {
                     "token_id": tokenId.toString(),
                     "creation_date": dateString,
@@ -83,21 +74,19 @@ function Membership() {
                 foundMembership = true;
             }
         }
-        catch(e) {
+        catch (e) {
             console.log(e)
             console.log("Failed to retrieve from contract...")
         }
 
         return foundMembership;
     }
-    
+
     async function getMembership() {
-        if(await tryGetMembershipFromCovalent())
-        {
+        if (await tryGetMembershipFromCovalent()) {
             console.log("Successfully retrieved from Covalent")
         }
-        else if (await tryGetMembershipFromContract())
-        {
+        else if (await tryGetMembershipFromContract()) {
             console.log("Successfully retrieved from Contract")
         }
 
@@ -105,19 +94,26 @@ function Membership() {
     }
 
     async function onIssue(tokenId) {
-        let [creationDate, name] = await membershipContract.idToMetadata(tokenId);
-        let date = new Date(creationDate * 1000);
-        let dateString = date.toLocaleString();
-        let addr6551 = await minterContract.getMembershipAddressById(tokenId);
+        try {
+            console.log("onIssue");
+            let [creationDate, name] = await membership_idToMetadata(tokenId);
+            let date = new Date(creationDate * 1000);
+            let dateString = date.toLocaleString();
+            let addr6551 = await minter_getMembershipAddressById(tokenId);
 
-        let data = {
-            "token_id": tokenId,
-            "creation_date": dateString,
-            "name": name,
-            "addr6551": addr6551
+            let data = {
+                "token_id": tokenId,
+                "creation_date": dateString,
+                "name": name,
+                "addr6551": addr6551
+            }
+
+            setMemberships([data]);
         }
-
-        setMemberships([data]);
+        catch (e) {
+            console.log(e)
+            console.log("onIssue failed...")
+        }
     }
 
     useEffect(() => {
@@ -128,18 +124,41 @@ function Membership() {
     }, [walletAddress]);
 
     return (
-        <>
-            {!isConnected && 
-            <>
-                <h1>Welcome to DCTRL membership</h1>
-                <p>Please connect your Ethereum wallet to continue</p>
-                <ConnectWallet setWalletAddress={setWalletAddress} />
-                <br />
-                <p>Other blockchain wallets coming soon!</p>
-            </>}
+        <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '10px',
+            minHeight: '100vh',
+        }}>
+            {!isConnected &&
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    border: '2px solid #FFCC00',
+                    borderRadius: '5px',
+                    padding: '20px',
+                    boxSizing: 'border-box'
+                }}>
+                    <p style={{
+                        fontSize: '5vw',
+                        fontWeight: 'bold'
+                    }}>Welcome to DCTRL membership</p>
+                    <p style={{
+                        fontSize: '2vw',
+                        fontWeight: 'bold'
+                    }}>Please connect your <span style={{color:'orange'}}>Metamask wallet</span> to continue</p>
+                    <ConnectWallet setWalletAddress={setWalletAddress} />
+                    <br />
+                    <p style={{
+                        fontSize: '2vw',
+                        fontWeight: 'bold'
+                    }}>Other blockchains & wallets coming soon!</p>
+                </div>}
             {(isConnected && memberships.length == 0) && <SignUp address={walletAddress} onIssue={onIssue}></SignUp>}
             {(isConnected && memberships.length > 0) && <Profile membership={memberships}></Profile>}
-        </>
+        </div>
     )
 }
 

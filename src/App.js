@@ -31,8 +31,10 @@ function App() {
           <br />
           <Link href="https://door3.dctrl.wtf">Door Access</Link>
           <br />
+          <Link href="https://0xtangle.notion.site/GENERAL-GUIDELINES-a4de149c5be1412f9e7723d2cc8381d3">Community Guidelines</Link>
+          <br />
           <RouterLink to="/membership">
-            <button type="button">
+            <button style={{ borderRadius: '50px', backgroundColor: '#FFCC00', color: 'black', padding: '10px 20px', fontSize: '15px'}} type="button">
               Membership
             </button>
           </RouterLink>

@@ -10,7 +10,9 @@ function BitcoinDonationButton() {
 
     return (
         <>
-            <Button variant="contained" onClick={showHideBitcoinQR}>
+            <Button 
+            style={{ borderRadius: '50px', backgroundColor: '#FFCC00', color: 'black', padding: '10px 20px', fontSize: '2vw', fontWeight: 'bold' }}
+            variant="contained" onClick={showHideBitcoinQR}>
                 Donate bitcoin on Lightning!
             </Button>
             <br/>

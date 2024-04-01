@@ -19,11 +19,16 @@ function ConnectWallet({ setWalletAddress }) {
     setMsg(null);
     setLoading(true);
     if (window.ethereum) {
-      await window.ethereum.enable();
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const address = await signer.getAddress();
-      setWalletAddress(address);
+      try {
+        await window.ethereum.enable();
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const address = await signer.getAddress();
+        setWalletAddress(address);
+      } catch (error) {
+        setMsg(error.message);
+        setLoading(false);
+      }
     } else {
       setMsg('Please install MetaMask!');
       setLoading(false);
@@ -31,13 +36,21 @@ function ConnectWallet({ setWalletAddress }) {
   }
 
   return (
-    <div>
-      <Button variant="contained" onClick={connect}>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+  }}>
+      <Button style={{ borderRadius: '50px', backgroundColor: '#FFCC00', color: 'black', padding: '10px 20px', fontSize: '2vw'}} variant="contained" onClick={connect}>
         Connect Wallet
       </Button>
       <br />
       {loading && <CircularProgress />}
-      {msg && <p>{msg}</p>}
+      {msg && <p style={{
+                    fontSize: '2vw',
+                    fontWeight: 'bold',
+                    color: 'red'
+                }}>{msg}</p>}
     </div>
   );
 }

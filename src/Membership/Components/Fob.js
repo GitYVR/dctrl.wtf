@@ -1,45 +1,28 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import CircularProgress from '@mui/material/CircularProgress';
-import { CovalentClient } from "@covalenthq/client-sdk";
 import { ethers } from "ethers";
-import FobABI from "../../Admin/ABI/FobNFTABI.json";
-import MinterABI from "../../Admin/ABI/MinterABI.json";
 import { Button } from "@mui/material";
+import { donateEther, minter_extendFob, covalent_getNftsForAddress, fob_getExpirationForToken, minter_getSingleFobForAddress, minter_issueFob, encryptNumberWithLargePrime } from "../API/blockchain";
 
-function Fob({address}) {
+function Fob({ address }) {
     const [fobs, setFobs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [fobNumber, setFobNumber] = useState(null);
     const [msg, setMsg] = useState(null);
     const [showWorkingText, setShowWorkingText] = useState(false);
-
-    const sepoliaProvider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP_SEPOLIA_RPC);
-    const wallet = new ethers.Wallet(process.env.REACT_APP_PRIV_KEY, sepoliaProvider);
-    const fobContract = new ethers.Contract(process.env.REACT_APP_FOB_ADDRESS, FobABI, wallet);
-    const minterContract = new ethers.Contract(process.env.REACT_APP_MINTER_ADDRESS, MinterABI, wallet);
-
+    
     useEffect(() => {
         refresh();
     }, []);
 
-    async function getPaymentForDays(days) {
-        return (await minterContract.fobDaily()).mul(days).toString();
-    }
-
-    function encryptNumber(number) {
-        return ethers.BigNumber.from(number).mul(process.env.REACT_APP_LARGEPRIME);
-    }
-
     async function tryGetFobFromCovalent() {
         let foundFob = false;
         try {
-            const client = new CovalentClient(process.env.REACT_APP_COVALENT_CLIENTID);
-            const resp = await client.NftService.getNftsForAddress("eth-sepolia", address, {"withUncached": true, "noNftAssetMetadata": false});
-            console.log(resp);
+            const resp = await covalent_getNftsForAddress(address);
             let newFobs = [];
             for (let obj in resp.data.items) {
                 if ((resp.data.items[obj].contract_address).toLowerCase() === process.env.REACT_APP_FOB_ADDRESS.toLowerCase()) {
-                    let expiration = await fobContract.idToExpiration(resp.data.items[obj].nft_data[0].token_id.toString())
+                    let expiration = await fob_getExpirationForToken(resp.data.items[obj].nft_data[0].token_id.toString());
                     let data = {
                         "token_id": resp.data.items[obj].nft_data[0].token_id.toString(),
                         "expiration": expiration.toString()
@@ -60,14 +43,13 @@ function Fob({address}) {
 
         return foundFob;
     }
-    
+
     async function tryGetFobFromContract() {
         let foundFob = false;
         try {
-            let tokenId = await minterContract.fobMap(address);
-            if (tokenId.toString() !== "0") 
-            {
-                let expiration = await fobContract.idToExpiration(tokenId)
+            let tokenId = await minter_getSingleFobForAddress(address);
+            if (tokenId.toString() !== "0") {
+                let expiration = await fob_getExpirationForToken(tokenId);
                 let data = {
                     "token_id": tokenId,
                     "expiration": expiration.toString()
@@ -84,7 +66,7 @@ function Fob({address}) {
     }
 
     async function refresh() {
-        if(await tryGetFobFromCovalent()) {
+        if (await tryGetFobFromCovalent()) {
             console.log("Found fob from Covalent");
         }
         else if (await tryGetFobFromContract()) {
@@ -102,13 +84,13 @@ function Fob({address}) {
             setLoading(true);
             setShowWorkingText(true);
             try {
+                await donateEther(ethers.utils.parseEther('0.005'));
+
                 let days = 30;
-                const payment = await getPaymentForDays(days);
-                const tx = await minterContract.issueFob(address, encryptNumber(fobNumber), days, { value: payment });
-                await tx.wait();
+                await minter_issueFob(address, fobNumber, days);
                 let data = {
-                    "token_id": encryptNumber(fobNumber),
-                    "expiration": (await fobContract.idToExpiration(encryptNumber(fobNumber))).toString()
+                    "token_id": encryptNumberWithLargePrime(fobNumber),
+                    "expiration": (await fob_getExpirationForToken(encryptNumberWithLargePrime(fobNumber))).toString()
                 }
 
                 setFobs([data]);
@@ -127,10 +109,10 @@ function Fob({address}) {
         setLoading(true);
         setShowWorkingText(true);
         try {
+            await donateEther(ethers.utils.parseEther('0.005'));
+
             let days = 30;
-            const payment = await getPaymentForDays(days);
-            const tx = await minterContract.extendFob(fobs[0].token_id, days, { value: payment });
-            await tx.wait();
+            await minter_extendFob(fobs[0].token_id, days);            
             await refresh();
         } catch (e) {
             console.log(e)
@@ -143,36 +125,68 @@ function Fob({address}) {
 
     return (
         <>
-            {!loading && fobs.length == 0 && 
-                <>
-                <p>No fobs found.</p>
-                <p>Enter your fob number and we'll register it for 30 days for free!</p>
-                <br />
-                Fob Number
-                <input type="text" onChange={(e) => setFobNumber(e.target.value)} />
-                <Button variant="contained" onClick={issue}>
-                Register Fob
-                </Button>
-                </>}
-            {!loading && fobs.length > 0 && 
-                <>
-                    <ul>
-                        <li>
-                            Fob Number: {ethers.BigNumber.from(fobs[0].token_id).div(process.env.REACT_APP_LARGEPRIME).toString()}
-                        </li>
-                        <li>
-                            Expiration Date: {new Date(fobs[0].expiration * 1000).toLocaleString()}
-                        </li>
-                    </ul>
-
-                    <Button variant="contained" onClick={extend}>
-                        Extend Fob for 30 days
+            {!loading && fobs.length === 0 &&
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    textAlign: 'center',
+                }}>
+                    <p style={{
+                        fontSize: '2vw',
+                        fontWeight: 'bold',
+                        color: '#90CAF9'
+                    }}>No fobs found.</p>
+                    <p style={{
+                        fontSize: '2vw',
+                        fontWeight: 'bold'
+                    }}>Enter your fob number and we'll register it for 30 days!</p>
+                    <p style={{
+                        fontSize: '2vw',
+                        fontWeight: 'bold'
+                    }}>There is a suggested donation of $25. Please contact us for other options. <span style={{ color: '#90CAF9', fontWeight: 'bold' }}>Supported networks:</span> Ethereum, Gnosis, Polygon, Plygon zkEVM, Binance, Arbitrum, Optimism, Base</p>
+                    
+                    <p style={{
+                        fontSize: '2vw',
+                        fontWeight: 'bold'
+                    }}>Fob Number</p>
+                    <input
+                        style={{ fontSize: '3vw', padding: '10px', textAlign: 'center' }}
+                        type="number"
+                        onChange={(e) => setFobNumber(e.target.value)} />
+                    <br/>
+                    <Button style={{ borderRadius: '50px', backgroundColor: '#90CAF9', color: 'black', padding: '10px 20px', fontSize: '2vw', fontWeight: 'bold' }}
+                        variant="contained" onClick={issue}>
+                        Register Fob: 0.005 ETH
                     </Button>
+                </div>}
+            {!loading && fobs.length > 0 &&
+                <>
+                    <p style={{
+                        fontSize: '2vw',
+                        fontWeight: 'bold'
+                    }}><span style={{ color: '#90CAF9' }}>Fob Number:</span> {ethers.BigNumber.from(fobs[0].token_id).div(process.env.REACT_APP_LARGEPRIME).toString()}</p>
+                    <p style={{
+                        fontSize: '2vw',
+                        fontWeight: 'bold'
+                    }}><span style={{ color: '#90CAF9' }}>Expiration Date:</span> {new Date(fobs[0].expiration * 1000).toLocaleString()}</p>
+
+                    <Button style={{ borderRadius: '50px', backgroundColor: '#90CAF9', color: 'black', padding: '10px 20px', fontSize: '2vw', fontWeight: 'bold' }} variant="contained" onClick={extend}>
+                        Extend for 30 days: 0.005 ETH
+                    </Button>
+                    <p style={{
+                        fontSize: '2vw',
+                        fontWeight: 'bold'
+                    }}>There is a suggested donation of $25. Please contact us for other options. <span style={{ color: '#90CAF9', fontWeight: 'bold' }}>Supported networks:</span> Ethereum, Gnosis, Polygon, Plygon zkEVM, Binance, Arbitrum, Optimism, Base</p>
+                    
                 </>
             }
             {loading && <CircularProgress />}
-            {showWorkingText && <p>Working... this may take up to 30 seconds.</p>}
-            {msg && <p style={{ color: 'red' }}>{msg}</p>}
+            {showWorkingText && <p style={{
+                        fontSize: '2vw',
+                        fontWeight: 'bold'
+                    }}>Working... this may take up to 30 seconds.</p>}
+            {msg && <p style={{ color: 'red', fontSize: '2vw' }}>{msg}</p>}
         </>
     )
 }
