@@ -1,26 +1,10 @@
-import { ethers } from 'ethers';
 import { useState } from 'react';
 import { Button } from '@mui/material';
-import MinterABI from '../ABI/MinterABI.json';
-import MembershipABI from '../ABI/MembershipNftABI.json';
-
-const MinterAddress = "0xB2895d2a0205F05c70C0342259492C97423FaCC4"
-const MembershipNftAddress = "0x807ec011bd4c5b122178d73fbd0b49d46fb4a0b9"
-
-function ManageMembershipComponent() {
+import { getMembershipIdFromName, minter_getMembershipAddressById, minter_issueMembership } from '../../Membership/API/blockchain';
+function ManageMembershipComponent(address) {
     const [membershipName, setMembershipName] = useState(null);
+    const [receiver, setReceiver] = useState(null);
     const [msg, setMsg] = useState("");
-
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const minterContract = new ethers.Contract(MinterAddress, MinterABI, signer);
-    const membershipContract = new ethers.Contract(MembershipNftAddress, MembershipABI, signer);
-
-
-    async function nameToId(name) {
-        const nameHash = ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(["string"], [name]));
-        return await membershipContract.nameToId(nameHash);
-    }
 
     async function showNameToId() {
         if (membershipName == null) {
@@ -28,7 +12,7 @@ function ManageMembershipComponent() {
             return;
         }
 
-        const tokenId = await nameToId(membershipName);
+        const tokenId = await getMembershipIdFromName(membershipName);
         setMsg(`Membership ${membershipName} has tokenId: ${tokenId}`);
     }
 
@@ -38,8 +22,8 @@ function ManageMembershipComponent() {
             return;
         }
 
-        const tokenId = await nameToId(membershipName);
-        const tokenAddress = await minterContract.getMembershipAddressById(tokenId);
+        const tokenId = await getMembershipIdFromName(membershipName);
+        const tokenAddress = await minter_getMembershipAddressById(tokenId);
 
         setMsg(`Membership ${membershipName} has address: ${tokenAddress}`);
     }
@@ -50,13 +34,17 @@ function ManageMembershipComponent() {
             return;
         }
 
-        const tx = await minterContract.issueMembership(await signer.getAddress(), membershipName);
-        await tx.wait();
+        if (receiver == null) {
+            setMsg("Please enter receiver");
+            return;
+        }
 
-        const tokenId = await nameToId(membershipName);
-        const tokenAddress = await minterContract.getMembershipAddressById(tokenId);
+        await minter_issueMembership(receiver, membershipName);
 
-        setMsg(`Membership ${membershipName} issued at transaction: ${tx.hash} with tokenId: ${tokenId} and address: ${tokenAddress}`);
+        const tokenId = await getMembershipIdFromName(membershipName);
+        const tokenAddress = await minter_getMembershipAddressById(tokenId);
+
+        setMsg(`Membership ${membershipName} issued with tokenId: ${tokenId} and address: ${tokenAddress}`);
     }
 
     return (
@@ -73,6 +61,9 @@ function ManageMembershipComponent() {
             <br />
                 Name
             <input type="text" onChange={(e) => setMembershipName(e.target.value)} />
+            <br />
+            Receiver
+            <input type="text" onChange={(e) => setReceiver(e.target.value)} />
             <br />
             {msg}
         </div>
