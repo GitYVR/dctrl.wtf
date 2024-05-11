@@ -2,6 +2,7 @@ import { Grid, Link, Typography } from "@mui/material";
 import Calender from "./Calendar";
 import { Link as RouterLink } from 'react-router-dom';
 import BitcoinDonationButton from "./Membership/Components/BitcoinDonationButton";
+import EthDonationButton from "./Membership/Components/EthDonationButton";
 
 function App() {
   return (
@@ -43,6 +44,8 @@ function App() {
             <h2>Consider making a donation</h2>
             <p>Donations are sent to the multisig address and help support the DCTRL community and are greatly appreciated!</p>
             <BitcoinDonationButton />
+            <br />
+            <EthDonationButton />
         </div>
         <Calender />
       </Grid>
