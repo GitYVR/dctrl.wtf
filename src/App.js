@@ -186,7 +186,7 @@ function App() {
 
   const donationButtonWrapperStyle = {
     width: '100%',
-    maxWidth: '250px',
+    maxWidth: '400px',
   };
 
   const calendarContainerStyle = {
