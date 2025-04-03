@@ -9,7 +9,7 @@ function EthDonationButton() {
     }
 
     return (
-        <>
+        <div style={{ textAlign: 'center', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
             <Button 
             style={{ borderRadius: '50px', backgroundColor: '#FFCC00', color: 'black', padding: '10px 20px', fontSize: '2vw', fontWeight: 'bold' }}
             variant="contained" onClick={showHideQR}>
@@ -23,7 +23,7 @@ function EthDonationButton() {
                 <p><span style={{ color: '#FFCC00', fontWeight: 'bold' }}>Supported networks:</span> Ethereum, Gnosis, Polygon, Plygon zkEVM, Binance, Arbitrum, Optimism, Base</p>
                 <img src="/ethQR.jpg" alt="Eth QR code" />
             </>}
-        </>
+        </div>
     );
 }
 

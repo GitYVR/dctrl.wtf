@@ -16,7 +16,11 @@ function BitcoinDonationButton() {
                 Donate bitcoin on Lightning!
             </Button>
             <br/>
-            {showBitcoinQR && <img src="/bitcoinQR.png" alt="Bitcoin QR code" />}
+            {showBitcoinQR && (
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <img src="/bitcoinQR.png" alt="Bitcoin QR code" />
+                </div>
+            )}
         </>
     );
 }
