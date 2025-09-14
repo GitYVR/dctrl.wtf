@@ -219,7 +219,6 @@ function App() {
         <div style={linksContainerStyle}>
           <a href="https://x.com/dctrlvan" target="_blank" rel="noopener noreferrer" style={linkStyle}>@dctrlvan</a>
           <a href="https://discord.gg/7rjEfhtsxe" target="_blank" rel="noopener noreferrer" style={linkStyle}>Discord</a>
-          <a href="https://yvrsidewalk.com" target="_blank" rel="noopener noreferrer" style={linkStyle}>Sidewalk</a>
           <a href="https://yvrbepsi.com" target="_blank" rel="noopener noreferrer" style={linkStyle}>Drink Machine</a>
           <a href="https://door3.dctrl.wtf" target="_blank" rel="noopener noreferrer" style={linkStyle}>Door Access</a>
           <a href="https://0xtangle.notion.site/GENERAL-GUIDELINES-a4de149c5be1412f9e7723d2cc8381d3" target="_blank" rel="noopener noreferrer" style={linkStyle}>Community Guidelines</a>
