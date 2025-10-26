@@ -9,6 +9,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import App from "./App";
 import Admin from "./Admin/Admin"; // import your new page component
 import Membership from "./Membership/Membership";
+import Redirect from "./Components/Redirect";
 
 const darkTheme = createTheme({
   palette: {
@@ -28,6 +29,8 @@ root.render(
         <Routes>
           <Route path="/admin" element={<Admin />} />
           <Route path="/membership" element={<Membership />} />
+          <Route path="/donate" element={<Redirect to="https://giveth.io/project/dctrl-clubhouse-events-space" />} />
+          <Route path="/giveth" element={<Redirect to="https://giveth.io/project/dctrl-clubhouse-events-space" />} />
           <Route path="/" element={<App />} />
         </Routes>
       </Router>
