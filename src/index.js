@@ -7,6 +7,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
 import App from "./App";
+import Redirect from "./Components/Redirect.js";
 
 const darkTheme = createTheme({
   palette: {
@@ -24,6 +25,8 @@ root.render(
       <CssBaseline />
       <Router>
         <Routes>
+          <Route path="/donate" element={<Redirect to="Giveth" url="https://giveth.io/project/dctrl-clubhouse-events-space" />} />
+          <Route path="/giveth" element={<Redirect to="Giveth" url="https://giveth.io/project/dctrl-clubhouse-events-space" />} />
           <Route path="/" element={<App />} />
         </Routes>
       </Router>
