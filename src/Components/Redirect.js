@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 
-const Redirect = ({ to }) => {
+const Redirect = ({ to, url }) => {
   useEffect(() => {
     // Redirect to the external URL
-    window.location.href = to;
-  }, [to]);
+    window.location.href = url;
+  }, [url]);
 
   // Show a loading message while redirecting
   return (
@@ -17,7 +17,7 @@ const Redirect = ({ to }) => {
       color: '#fff',
       backgroundColor: '#000'
     }}>
-      <p>Redirecting to Giveth</p>
+      <p>Redirecting to {to}...</p>
     </div>
   );
 };

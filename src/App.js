@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Calendar from "./Calendar";
 import BitcoinDonationButton from "./Components/BitcoinDonationButton";
 import EthDonationButton from "./Components/EthDonationButton";
+import GivethButton from "./Components/GivethButton";
 
 // Main App component
 function App() {
@@ -213,6 +214,7 @@ function App() {
           <div style={donationButtonsContainerStyle}>
             <div style={donationButtonWrapperStyle}><BitcoinDonationButton /></div>
             <div style={donationButtonWrapperStyle}><EthDonationButton /></div>
+            <div style={donationButtonWrapperStyle}><GivethButton /></div>
           </div>
         </div>
       </div>
