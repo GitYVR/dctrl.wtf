@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from 'react'; // Import hooks
-// Assuming Calendar, BitcoinDonationButton, and EthDonationButton are correctly imported
-import Calendar from "./Calendar"; // Assuming this path is correct
-import BitcoinDonationButton from "./Membership/Components/BitcoinDonationButton"; // Assuming this path is correct
-import EthDonationButton from "./Membership/Components/EthDonationButton"; // Assuming this path is correct
-// Keep react-router-dom Link for navigation
-import { Link as RouterLink } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import Calendar from "./Calendar";
+import BitcoinDonationButton from "./Components/BitcoinDonationButton";
+import EthDonationButton from "./Components/EthDonationButton";
 
 // Main App component
 function App() {
@@ -122,26 +119,6 @@ function App() {
     fontWeight: '500',
   };
 
-  const membershipLinkWrapperStyle = {
-    display: 'inline-block',
-    marginBottom: '4rem',
-    ...getAnimatedStyle(isButtonVisible), // Apply animation styles
-  };
-
-  const membershipButtonStyle = {
-    borderRadius: '50px',
-    background: 'linear-gradient(60deg, #FFEB3B, #FFC107)',
-    color: '#212121',
-    padding: '14px 32px',
-    fontSize: 'clamp(1.05rem, 4.5vw, 1.2rem)',
-    fontWeight: '700',
-    border: 'none',
-    cursor: 'pointer',
-    boxShadow: '0 6px 20px 0 rgba(255, 215, 0, 0.35)',
-    // Add transition for potential future interactive styles if needed
-    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-  };
-
   const dividerStyle = {
     height: '1px',
     width: '80%',
@@ -186,7 +163,7 @@ function App() {
 
   const donationButtonWrapperStyle = {
     width: '100%',
-    maxWidth: '250px',
+    maxWidth: '400px',
   };
 
   const calendarContainerStyle = {
@@ -219,18 +196,10 @@ function App() {
         <div style={linksContainerStyle}>
           <a href="https://x.com/dctrlvan" target="_blank" rel="noopener noreferrer" style={linkStyle}>@dctrlvan</a>
           <a href="https://discord.gg/7rjEfhtsxe" target="_blank" rel="noopener noreferrer" style={linkStyle}>Discord</a>
-          <a href="https://yvrsidewalk.com" target="_blank" rel="noopener noreferrer" style={linkStyle}>Sidewalk</a>
           <a href="https://yvrbepsi.com" target="_blank" rel="noopener noreferrer" style={linkStyle}>Drink Machine</a>
           <a href="https://door3.dctrl.wtf" target="_blank" rel="noopener noreferrer" style={linkStyle}>Door Access</a>
           <a href="https://0xtangle.notion.site/GENERAL-GUIDELINES-a4de149c5be1412f9e7723d2cc8381d3" target="_blank" rel="noopener noreferrer" style={linkStyle}>Community Guidelines</a>
         </div>
-
-        {/* Apply animated style object to wrapper
-        <RouterLink to="/membership" style={membershipLinkWrapperStyle}>
-          <button style={membershipButtonStyle} type="button">
-            Membership
-          </button>
-        </RouterLink> */}
 
         {/* Apply animated style object */}
         <hr style={dividerStyle} />
