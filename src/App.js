@@ -3,6 +3,8 @@ import Calendar from "./Calendar";
 import BitcoinDonationButton from "./Components/BitcoinDonationButton";
 import EthDonationButton from "./Components/EthDonationButton";
 import GivethButton from "./Components/GivethButton";
+import ImageGallery from 'react-image-gallery';
+import "react-image-gallery/styles/css/image-gallery.css";
 
 // Main App component
 function App() {
@@ -222,10 +224,85 @@ function App() {
       {/* Apply animated style object */}
       <hr style={dividerStyle} />
 
-      <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2rem)', fontWeight: '700', color: '#FFFFFF' }}>
-        The Future of Crypto is DCTRL
+
+      {/* Gallery Section */}
+      <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2rem)', fontWeight: '700', color: '#FFFFFF', marginBottom: '2rem' }}>
+        The Clubhouse
       </h2>
-      <img src="photo.webp" alt="DCTRL Members" style={{ marginTop: '2rem', maxWidth: '100%', borderRadius: '8px' }} />
+        <ImageGallery
+          items={[
+            {
+              original: '/gallery/1.jpg',
+              thumbnail: '/gallery/1.jpg',
+              description: 'Museum of blockchain relics',
+              originalAlt: 'Museum of blockchain relics',
+              thumbnailAlt: 'Museum of blockchain relics',
+            },
+            {
+              original: '/gallery/2.jpg',
+              thumbnail: '/gallery/2.jpg',
+              description: 'Co-founders Cam and Freddie with Vitalik Buterin',
+              originalAlt: 'Co-founders Cam and Freddie with Vitalik Buterin',
+              thumbnailAlt: 'Co-founders Cam and Freddie with Vitalik Buterin',
+            },
+            {
+              original: '/gallery/3.jpg',
+              thumbnail: '/gallery/3.jpg',
+              description: 'Main event area',
+              originalAlt: 'Main event area',
+              thumbnailAlt: 'Main event area',
+            },
+            {
+              original: '/gallery/4.jpg',
+              thumbnail: '/gallery/4.jpg',
+              description: 'Tea wall and vending machines',
+              originalAlt: 'Tea wall and vending machines',
+              thumbnailAlt: 'Tea wall and vending machines',
+            },
+            {
+              original: '/gallery/5.jpg',
+              thumbnail: '/gallery/5.jpg',
+              description: 'Vancouver Mayor Ken Sim using the Bepsi',
+              originalAlt: 'Vancouver Mayor Ken Sim using the Bepsi',
+              thumbnailAlt: 'Vancouver Mayor Ken Sim using the Bepsi',
+            },
+            {
+              original: '/gallery/6.jpg',
+              thumbnail: '/gallery/6.jpg',
+              description: 'Members meeting room',
+              originalAlt: 'Members meeting room',
+              thumbnailAlt: 'Members meeting room',
+            },
+            {
+              original: '/gallery/7.jpg',
+              thumbnail: '/gallery/7.jpg',
+              description: 'Live stream equipment and piano',
+              originalAlt: 'Live stream equipment and piano',
+              thumbnailAlt: 'Live stream equipment and piano',
+            },
+            {
+              original: '/gallery/8.png',
+              thumbnail: '/gallery/8.png',
+              description: 'One of many events from over the years',
+              originalAlt: 'One of many events from over the years',
+              thumbnailAlt: 'One of many events from over the years',
+            },
+            {
+              original: '/gallery/9.webp',
+              thumbnail: '/gallery/9.webp',
+              description: 'Ethereum birthday party',
+              originalAlt: 'Ethereum birthday party',
+              thumbnailAlt: 'Ethereum birthday party',
+            },
+          ]}
+          showThumbnails={true}
+          showPlayButton={true}
+          autoPlay={true}
+          slideInterval={4000}
+          showFullscreenButton={true}
+          showBullets={true}
+          showIndex={true}
+        />
 
 
       {/* Apply animated style object */}
