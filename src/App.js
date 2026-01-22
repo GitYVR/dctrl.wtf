@@ -189,8 +189,6 @@ function App() {
         />
 
         {/* Apply animated style object */}
-        <h1 style={titleStyle}>DCTRL</h1>
-        {/* Apply animated style object */}
         <p style={addressStyle}>
           436 W Pender Street, Vancouver, BC
         </p>
