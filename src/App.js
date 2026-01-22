@@ -11,10 +11,8 @@ function App() {
   // --- State for Animation Visibility ---
   // We'll set these to true after mount to trigger transitions
   const [isLogoVisible, setIsLogoVisible] = useState(false);
-  const [isTitleVisible, setIsTitleVisible] = useState(false);
   const [isAddressVisible, setIsAddressVisible] = useState(false);
   const [isLinksVisible, setIsLinksVisible] = useState(false);
-  const [isButtonVisible, setIsButtonVisible] = useState(false);
   const [isDividerVisible, setIsDividerVisible] = useState(false);
   const [isDonationVisible, setIsDonationVisible] = useState(false);
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
@@ -23,10 +21,8 @@ function App() {
   useEffect(() => {
     // Use timeouts to stagger the animations
     const timer1 = setTimeout(() => setIsLogoVisible(true), 100); // Logo first
-    const timer2 = setTimeout(() => setIsTitleVisible(true), 200); // Then title
     const timer3 = setTimeout(() => setIsAddressVisible(true), 300); // Address
     const timer4 = setTimeout(() => setIsLinksVisible(true), 400); // Links
-    const timer5 = setTimeout(() => setIsButtonVisible(true), 500); // Button
     const timer6 = setTimeout(() => setIsDividerVisible(true), 600); // Divider
     const timer7 = setTimeout(() => setIsDonationVisible(true), 700); // Donation section
     const timer8 = setTimeout(() => setIsCalendarVisible(true), 800); // Calendar last
@@ -34,10 +30,8 @@ function App() {
     // Cleanup function to clear timeouts if component unmounts
     return () => {
       clearTimeout(timer1);
-      clearTimeout(timer2);
       clearTimeout(timer3);
       clearTimeout(timer4);
-      clearTimeout(timer5);
       clearTimeout(timer6);
       clearTimeout(timer7);
       clearTimeout(timer8);
@@ -84,20 +78,6 @@ function App() {
     marginRight: 'auto',
     marginBottom: '2.5rem',
     ...getAnimatedStyle(isLogoVisible), // Apply animation styles
-  };
-
-  const titleStyle = {
-    fontSize: 'clamp(2.5rem, 10vw, 4rem)',
-    fontWeight: '800',
-    marginBottom: '1rem',
-    letterSpacing: '-0.03em',
-    background: 'linear-gradient(90deg, #FACC15, #FF8C00)',
-    WebkitBackgroundClip: 'text',
-    backgroundClip: 'text',
-    color: 'transparent',
-    ...getAnimatedStyle(isTitleVisible), // Apply animation styles
-    // Ensure transition doesn't break background-clip
-    transition: `opacity 0.6s ease-out, transform 0.6s ease-out`,
   };
 
   const addressStyle = {
