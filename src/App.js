@@ -3,6 +3,7 @@ import Calendar from "./Calendar";
 import BitcoinDonationButton from "./Components/BitcoinDonationButton";
 import EthDonationButton from "./Components/EthDonationButton";
 import GivethButton from "./Components/GivethButton";
+import GeyserButton from "./Components/GeyserButton";
 import ImageGallery from 'react-image-gallery';
 import "react-image-gallery/styles/css/image-gallery.css";
 
@@ -11,6 +12,7 @@ function App() {
   // --- State for Animation Visibility ---
   // We'll set these to true after mount to trigger transitions
   const [isLogoVisible, setIsLogoVisible] = useState(false);
+  const [isNoticeVisible, setIsNoticeVisible] = useState(false);
   const [isAddressVisible, setIsAddressVisible] = useState(false);
   const [isLinksVisible, setIsLinksVisible] = useState(false);
   const [isDividerVisible, setIsDividerVisible] = useState(false);
@@ -21,15 +23,17 @@ function App() {
   useEffect(() => {
     // Use timeouts to stagger the animations
     const timer1 = setTimeout(() => setIsLogoVisible(true), 100); // Logo first
-    const timer3 = setTimeout(() => setIsAddressVisible(true), 300); // Address
-    const timer4 = setTimeout(() => setIsLinksVisible(true), 400); // Links
-    const timer6 = setTimeout(() => setIsDividerVisible(true), 600); // Divider
-    const timer7 = setTimeout(() => setIsDonationVisible(true), 700); // Donation section
-    const timer8 = setTimeout(() => setIsCalendarVisible(true), 800); // Calendar last
+    const timer2 = setTimeout(() => setIsNoticeVisible(true), 200); // Notice
+    const timer3 = setTimeout(() => setIsAddressVisible(true), 400); // Address
+    const timer4 = setTimeout(() => setIsLinksVisible(true), 500); // Links
+    const timer6 = setTimeout(() => setIsDividerVisible(true), 700); // Divider
+    const timer7 = setTimeout(() => setIsDonationVisible(true), 800); // Donation section
+    const timer8 = setTimeout(() => setIsCalendarVisible(true), 900); // Calendar last
 
     // Cleanup function to clear timeouts if component unmounts
     return () => {
       clearTimeout(timer1);
+      clearTimeout(timer2);
       clearTimeout(timer3);
       clearTimeout(timer4);
       clearTimeout(timer6);
@@ -78,6 +82,38 @@ function App() {
     marginRight: 'auto',
     marginBottom: '2.5rem',
     ...getAnimatedStyle(isLogoVisible), // Apply animation styles
+  };
+
+  const noticeSectionStyle = {
+    backgroundColor: 'rgba(251, 191, 36, 0.12)',
+    border: '1px solid rgba(251, 191, 36, 0.4)',
+    borderRadius: '12px',
+    padding: '1.5rem 2rem',
+    marginBottom: '2.5rem',
+    textAlign: 'center',
+    ...getAnimatedStyle(isNoticeVisible),
+  };
+
+  const noticeTitleStyle = {
+    fontSize: 'clamp(1.1rem, 4.5vw, 1.4rem)',
+    fontWeight: '700',
+    color: '#FBBF24',
+    marginBottom: '1rem',
+    marginTop: '0',
+  };
+
+  const noticeTextStyle = {
+    fontSize: 'clamp(0.95rem, 3.5vw, 1.05rem)',
+    color: '#E5E7EB',
+    lineHeight: '1.7',
+    marginBottom: '1rem',
+  };
+
+  const noticeLinkStyle = {
+    color: '#FBBF24',
+    textDecoration: 'none',
+    fontWeight: '600',
+    transition: 'color 0.2s ease',
   };
 
   const addressStyle = {
@@ -168,6 +204,20 @@ function App() {
           onError={(e) => { /* Error handling */ }}
         />
 
+        {/* Urgent Notice Section */}
+        <div style={noticeSectionStyle}>
+          <h2 style={noticeTitleStyle}>Vancouver's Longest-Running Decentralized Tech Space</h2>
+          <p style={noticeTextStyle}>
+            We are urgently looking for support to transition to our new space for lease, purchase, or storage starting <strong>March 1st</strong>.
+          </p>
+          <p style={noticeTextStyle}>
+            <a href="https://0xtangle.notion.site/vancouver-hub" target="_blank" rel="noopener noreferrer" style={noticeLinkStyle}>Read our vision →</a>
+          </p>
+          <p style={{...noticeTextStyle, marginBottom: 0}}>
+            Contact us at <a href="mailto:hello@dctrl.wtf" style={noticeLinkStyle}>hello@dctrl.wtf</a>
+          </p>
+        </div>
+
         {/* Apply animated style object */}
         <p style={addressStyle}>
           436 W Pender Street, Vancouver, BC
@@ -195,6 +245,7 @@ function App() {
             <div style={donationButtonWrapperStyle}><BitcoinDonationButton /></div>
             <div style={donationButtonWrapperStyle}><EthDonationButton /></div>
             <div style={donationButtonWrapperStyle}><GivethButton /></div>
+            <div style={donationButtonWrapperStyle}><GeyserButton /></div>
           </div>
         </div>
       </div>
