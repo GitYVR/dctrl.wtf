@@ -138,6 +138,28 @@ function App() {
     fontWeight: '500',
   };
 
+  const socialIconRowStyle = {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '1.5rem',
+    marginBottom: '1.5rem',
+  };
+
+  const socialIconLinkStyle = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'opacity 0.2s ease, transform 0.2s ease',
+  };
+
+  const socialIconStyle = {
+    width: 'clamp(100px, 6vw, 36px)',
+    height: 'clamp(100px, 6vw, 36px)',
+    display: 'block',
+  };
+
   const dividerStyle = {
     height: '1px',
     width: '80%',
@@ -225,8 +247,15 @@ function App() {
 
         {/* Apply animated style object to container */}
         <div style={linksContainerStyle}>
-          <a href="https://x.com/dctrlvan" target="_blank" rel="noopener noreferrer" style={linkStyle}>@dctrlvan</a>
-          <a href="https://discord.gg/7rjEfhtsxe" target="_blank" rel="noopener noreferrer" style={linkStyle}>Discord</a>
+          <div style={socialIconRowStyle}>
+            <a href="https://x.com/dctrlvan" target="_blank" rel="noopener noreferrer" style={socialIconLinkStyle} aria-label="@dctrlvan on X">
+              <img src="/x.png" alt="X" style={socialIconStyle} />
+            </a>
+            <a href="https://discord.gg/7rjEfhtsxe" target="_blank" rel="noopener noreferrer" style={socialIconLinkStyle} aria-label="Discord">
+              <img src="/discord.png" alt="Discord" style={socialIconStyle} />
+            </a>
+          </div>
+          <a href="/360dctrl/index.html" target="_blank" rel="noopener noreferrer" style={linkStyle}>Virtual Tour</a>
           <a href="https://yvrbepsi.com" target="_blank" rel="noopener noreferrer" style={linkStyle}>Drink Machine</a>
           <a href="https://door3.dctrl.wtf" target="_blank" rel="noopener noreferrer" style={linkStyle}>Door Access</a>
           <a href="https://0xtangle.notion.site/GENERAL-GUIDELINES-a4de149c5be1412f9e7723d2cc8381d3" target="_blank" rel="noopener noreferrer" style={linkStyle}>Community Guidelines</a>
